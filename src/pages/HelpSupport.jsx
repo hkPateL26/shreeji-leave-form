@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PageTransition from '../components/PageTransition';
+import Skeleton from '../components/Skeleton';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   HelpCircle, 
@@ -29,6 +30,7 @@ const itemVariants = {
 };
 
 const HelpSupport = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const [activeFaq, setActiveFaq] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -39,6 +41,85 @@ const HelpSupport = () => {
     message: ''
   });
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 800); // 800ms premium feel micro-loading
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <PageTransition>
+        <div className="glass-container form-container" style={{ paddingBottom: '140px', maxWidth: '850px', margin: '0 auto', width: '100%' }}>
+          {/* Header Section */}
+          <div className="header-section" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
+            <Skeleton width="180px" height="32px" borderRadius="10px" />
+            <Skeleton width="280px" height="18px" borderRadius="6px" />
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', marginTop: '12px' }}>
+            {/* Quick Contacts */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
+              {[1, 2, 3].map(i => (
+                <div key={i} style={{ padding: '20px', background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)', borderRadius: '16px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <Skeleton width="28px" height="28px" borderRadius="50%" />
+                  <Skeleton width="100px" height="20px" borderRadius="6px" />
+                  <Skeleton width="150px" height="14px" borderRadius="4px" />
+                </div>
+              ))}
+            </div>
+
+            {/* FAQs Accordion */}
+            <div style={{ background: 'var(--bg-surface)', borderRadius: '24px', padding: '24px', border: '1px solid var(--border-subtle)', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Skeleton width="20px" height="20px" borderRadius="50%" />
+                <Skeleton width="220px" height="22px" borderRadius="6px" />
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {[1, 2, 3, 4].map(i => (
+                  <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px', border: '1px solid var(--border-subtle)', borderRadius: '12px' }}>
+                    <Skeleton width="50%" height="16px" borderRadius="4px" />
+                    <Skeleton width="16px" height="16px" borderRadius="4px" />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Ticket Form */}
+            <div style={{ background: 'var(--bg-surface)', borderRadius: '24px', padding: '24px', border: '1px solid var(--border-subtle)', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Skeleton width="20px" height="20px" borderRadius="50%" />
+                <Skeleton width="180px" height="22px" borderRadius="6px" />
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <Skeleton width="80px" height="14px" borderRadius="4px" />
+                    <Skeleton width="100%" height="45px" borderRadius="10px" />
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <Skeleton width="90px" height="14px" borderRadius="4px" />
+                    <Skeleton width="100%" height="45px" borderRadius="10px" />
+                  </div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <Skeleton width="110px" height="14px" borderRadius="4px" />
+                  <Skeleton width="100%" height="45px" borderRadius="10px" />
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <Skeleton width="140px" height="14px" borderRadius="4px" />
+                  <Skeleton width="100%" height="120px" borderRadius="10px" />
+                </div>
+                <Skeleton width="100%" height="45px" borderRadius="10px" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </PageTransition>
+    );
+  }
 
   const faqs = [
     {

@@ -236,7 +236,7 @@ h1, h2, h3, p { margin: 0; }
 
 .glass-container {
   min-height: 100%;
-  padding: 20px 16px 40px;
+  padding: 20px 16px 140px; /* Generous bottom padding to ensure all form content and buttons scroll completely above the bottom-nav on mobile */
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -552,9 +552,11 @@ h1, h2, h3, p { margin: 0; }
   to { transform: rotate(360deg); }
 }
 
-/* Bottom Nav - Clean Flex Sibling */
+/* Bottom Nav - Fixed layout to stay perfectly locked at the bottom */
 .bottom-nav {
-  position: relative;
+  position: fixed;
+  bottom: 0;
+  left: 0;
   width: 100%;
   display: flex;
   justify-content: space-around;
@@ -565,7 +567,6 @@ h1, h2, h3, p { margin: 0; }
   background: var(--bg-surface-solid);
   border-top: 1px solid var(--border-subtle);
   transition: all 0.3s ease;
-  flex-shrink: 0;
 }
 
 @media (min-width: 768px) {

@@ -94,6 +94,8 @@ body.light-mode::after {
   display: flex;
   flex-direction: column;
   min-width: 0;
+  height: 100dvh;
+  overflow: hidden;
 }
 
 .content-area {
@@ -234,7 +236,7 @@ h1, h2, h3, p { margin: 0; }
 
 .glass-container {
   min-height: 100%;
-  padding: 24px 16px 120px;
+  padding: 20px 16px 40px;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -550,25 +552,25 @@ h1, h2, h3, p { margin: 0; }
   to { transform: rotate(360deg); }
 }
 
-/* Bottom Nav - Fully Fixed */
+/* Bottom Nav - Clean Flex Sibling */
 .bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
+  position: relative;
   width: 100%;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  padding: 16px 8px;
-  padding-bottom: calc(16px + env(safe-area-inset-bottom));
+  padding: 12px 8px;
+  padding-bottom: calc(12px + env(safe-area-inset-bottom));
   z-index: 1000;
   background: var(--bg-surface-solid);
   border-top: 1px solid var(--border-subtle);
   transition: all 0.3s ease;
+  flex-shrink: 0;
 }
 
 @media (min-width: 768px) {
   .bottom-nav {
+    position: fixed;
     bottom: 24px;
     left: 50%;
     transform: translateX(-50%);

@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { LayoutDashboard, LogIn, LogOut, CalendarRange, PieChart } from 'lucide-react';
+import { LayoutDashboard, LogIn, LogOut, CalendarRange, PieChart, HelpCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { vibrate } from '../utils/haptics';
 
@@ -11,6 +11,7 @@ const BottomNav = () => {
     { path: '/', label: 'Dashboard', icon: LayoutDashboard },
     { path: '/status', label: 'Status', icon: PieChart },
     { path: '/leave', label: 'Leave', icon: CalendarRange },
+    { path: '/support', label: 'Support', icon: HelpCircle },
   ];
 
   return (

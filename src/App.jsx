@@ -1,13 +1,14 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation, NavLink } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { LayoutDashboard, CalendarRange, PieChart } from 'lucide-react';
+import { LayoutDashboard, CalendarRange, PieChart, HelpCircle } from 'lucide-react';
 
 import Dashboard from './pages/Dashboard';
 import CheckIn from './pages/CheckIn';
 import CheckOut from './pages/CheckOut';
 import LeaveForm from './pages/LeaveForm';
 import Status from './pages/Status';
+import HelpSupport from './pages/HelpSupport';
 import BottomNav from './components/BottomNav';
 import ThemeToggle from './components/ThemeToggle';
 import { vibrate } from './utils/haptics';
@@ -21,6 +22,7 @@ const Sidebar = () => {
     { path: '/',      label: 'Dashboard', icon: LayoutDashboard },
     { path: '/status',label: 'Status',    icon: PieChart },
     { path: '/leave', label: 'Leave',     icon: CalendarRange },
+    { path: '/support',label: 'Support',   icon: HelpCircle },
   ];
 
   return (
@@ -88,6 +90,7 @@ const TopHeader = () => {
       case '/checkout': return 'Daily Check Out';
       case '/leave': return 'Leave Request';
       case '/status': return 'Status Dashboard';
+      case '/support': return 'Help & Support';
       default: return 'Portal';
     }
   };
@@ -130,6 +133,7 @@ const AppLayout = () => {
               <Route path="/checkout" element={<CheckOut />} />
               <Route path="/leave"    element={<LeaveForm />} />
               <Route path="/status"   element={<Status />} />
+              <Route path="/support"  element={<HelpSupport />} />
             </Routes>
           </AnimatePresence>
         </div>

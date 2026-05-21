@@ -122,7 +122,7 @@ const Status = () => {
 
   return (
     <PageTransition>
-      <div className="glass-container" style={{ paddingBottom: '120px', maxWidth: '1000px', margin: '0 auto', width: '100%' }}>
+      <div className="glass-container" style={{ paddingBottom: '140px', maxWidth: '1000px', margin: '0 auto', width: '100%' }}>
 
         {isLoading ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>

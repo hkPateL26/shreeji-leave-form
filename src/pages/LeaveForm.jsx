@@ -277,7 +277,7 @@ const LeaveForm = () => {
 
   return (
     <PageTransition>
-      <div className="glass-container form-container" style={{ paddingBottom: '100px', maxWidth: '800px', margin: '0 auto', width: '100%' }}>
+      <div className="glass-container form-container" style={{ paddingBottom: '140px', maxWidth: '800px', margin: '0 auto', width: '100%' }}>
         
         {/* Header Section */}
         <motion.div className="header-section" style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }} initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>

@@ -92,7 +92,7 @@ const Dashboard = () => {
 
   return (
     <PageTransition>
-      <div className="glass-container dashboard-container">
+      <div className="glass-container dashboard-container" style={{ paddingBottom: '140px' }}>
 
         {/* ═══ Desktop 2-col grid ═══════════════════════════════ */}
         {isLoading ? (

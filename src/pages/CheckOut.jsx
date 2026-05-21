@@ -108,7 +108,7 @@ const CheckOut = () => {
 
   return (
     <PageTransition>
-      <div className="glass-container form-container">
+      <div className="glass-container form-container" style={{ paddingBottom: '140px' }}>
         <motion.div className="header-section" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
           <h2 className="form-title">Daily Check Out</h2>
           <div className="badge danger">

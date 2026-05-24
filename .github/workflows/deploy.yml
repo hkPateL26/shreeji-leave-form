@@ -33,5 +33,6 @@ jobs:
           SOURCE: "dist/"
           REMOTE_HOST: ${{ secrets.SSH_HOST }}
           REMOTE_USER: ${{ secrets.SSH_USERNAME }}
+          REMOTE_PORT: '2204'
           TARGET: "/var/www/shreeji-leave-form/dist"
           EXCLUDE: "/dist/, /node_modules/"

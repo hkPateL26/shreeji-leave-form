@@ -1009,3 +1009,44 @@ body.light-mode .skeleton-box {
   }
 }
 
+/* ── Desktop Recent Activity Scroll List ── */
+.desktop-activity-scroll-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+@media (min-width: 768px) {
+  .desktop-activity-scroll-list {
+    max-height: 440px;
+    overflow-y: auto;
+    padding-right: 6px;
+    /* Custom scrollbar for clean premium desktop view */
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-subtle) transparent;
+  }
+
+  .desktop-activity-scroll-list::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .desktop-activity-scroll-list::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .desktop-activity-scroll-list::-webkit-scrollbar-thumb {
+    background: var(--border-subtle);
+    border-radius: 10px;
+    transition: background 0.2s ease;
+  }
+
+  .desktop-activity-scroll-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+  
+  body.light-mode .desktop-activity-scroll-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.15);
+  }
+}
+
+

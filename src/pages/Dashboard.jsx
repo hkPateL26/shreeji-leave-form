@@ -330,85 +330,87 @@ const Dashboard = () => {
                 </motion.div>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  {activities.slice(0, 3).map((activity) => {
-                    const cfg = typeConfig[activity.type] || { label: activity.type, color: '#94a3b8', icon: Clock };
-                    const { label, color, icon: Icon } = cfg;
-                    const isExpanded = expandedId === activity.id;
-                    return (
-                      <motion.div
-                        key={activity.id}
-                        layout
-                        variants={itemVariants}
-                        onClick={() => { vibrate(15); setExpandedId(isExpanded ? null : activity.id); }}
-                        whileTap={{ scale: 0.985 }}
-                        style={{
-                          background: 'var(--bg-surface)',
-                          border: `1px solid ${isExpanded ? color + '45' : 'var(--border-subtle)'}`,
-                          borderRadius: '16px', overflow: 'hidden', cursor: 'pointer',
-                          boxShadow: isExpanded ? `0 6px 20px -6px ${color}28` : 'none',
-                          transition: 'border-color 0.25s, box-shadow 0.25s',
-                        }}
-                      >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '13px 14px' }}>
-                          <div style={{
-                            width: '40px', height: '40px', borderRadius: '12px', flexShrink: 0,
-                            background: `${color}16`, border: `1px solid ${color}28`,
-                            display: 'flex', alignItems: 'center', justifyContent: 'center'
-                          }}>
-                            <Icon size={18} color={color} />
-                          </div>
-                          <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                              <span style={{ fontWeight: 700, fontSize: '15px', color: 'var(--text-primary)' }}>{label}</span>
-                              <span style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: 500 }}>{fmtTime(activity.timestamp)}</span>
+                  <div className="desktop-activity-scroll-list">
+                    {activities.slice(0, 3).map((activity) => {
+                      const cfg = typeConfig[activity.type] || { label: activity.type, color: '#94a3b8', icon: Clock };
+                      const { label, color, icon: Icon } = cfg;
+                      const isExpanded = expandedId === activity.id;
+                      return (
+                        <motion.div
+                          key={activity.id}
+                          layout
+                          variants={itemVariants}
+                          onClick={() => { vibrate(15); setExpandedId(isExpanded ? null : activity.id); }}
+                          whileTap={{ scale: 0.985 }}
+                          style={{
+                            background: 'var(--bg-surface)',
+                            border: `1px solid ${isExpanded ? color + '45' : 'var(--border-subtle)'}`,
+                            borderRadius: '16px', overflow: 'hidden', cursor: 'pointer',
+                            boxShadow: isExpanded ? `0 6px 20px -6px ${color}28` : 'none',
+                            transition: 'border-color 0.25s, box-shadow 0.25s',
+                          }}
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '13px 14px' }}>
+                            <div style={{
+                              width: '40px', height: '40px', borderRadius: '12px', flexShrink: 0,
+                              background: `${color}16`, border: `1px solid ${color}28`,
+                              display: 'flex', alignItems: 'center', justifyContent: 'center'
+                            }}>
+                              <Icon size={18} color={color} />
                             </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                              <div style={{ fontSize: '12px', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                <CalendarIcon size={11} />
-                                {fmtDate(activity.timestamp)}
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                                <span style={{ fontWeight: 700, fontSize: '15px', color: 'var(--text-primary)' }}>{label}</span>
+                                <span style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: 500 }}>{fmtTime(activity.timestamp)}</span>
                               </div>
-                              {activity.name && (
-                                <span style={{ fontSize: '12px', color, fontWeight: 700, maxWidth: '110px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                  {activity.name}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                          <motion.div
-                            animate={{ rotate: isExpanded ? 180 : 0 }}
-                            transition={{ type: 'spring', stiffness: 300, damping: 22 }}
-                            style={{ color: isExpanded ? color : 'var(--text-secondary)', flexShrink: 0 }}
-                          >
-                            <ChevronDown size={16} />
-                          </motion.div>
-                        </div>
-
-                        <AnimatePresence>
-                          {isExpanded && (
-                            <motion.div
-                              initial={{ height: 0, opacity: 0 }}
-                              animate={{ height: 'auto', opacity: 1 }}
-                              exit={{ height: 0, opacity: 0 }}
-                              transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-                              style={{ overflow: 'hidden' }}
-                            >
-                              <div style={{ margin: '0 14px', paddingBottom: '14px', borderTop: `1px solid ${color}20` }}>
-                                <div style={{
-                                  display: 'inline-flex', alignItems: 'center', gap: '5px',
-                                  background: `${color}12`, border: `1px solid ${color}25`,
-                                  borderRadius: '100px', padding: '4px 10px', marginTop: '12px', marginBottom: '8px',
-                                  fontSize: '11px', fontWeight: 700, color, textTransform: 'uppercase', letterSpacing: '0.05em'
-                                }}>
-                                  {label} Details
+                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <div style={{ fontSize: '12px', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                  <CalendarIcon size={11} />
+                                  {fmtDate(activity.timestamp)}
                                 </div>
-                                {renderDetails(activity)}
+                                {activity.name && (
+                                  <span style={{ fontSize: '12px', color, fontWeight: 700, maxWidth: '110px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                    {activity.name}
+                                  </span>
+                                )}
                               </div>
+                            </div>
+                            <motion.div
+                              animate={{ rotate: isExpanded ? 180 : 0 }}
+                              transition={{ type: 'spring', stiffness: 300, damping: 22 }}
+                              style={{ color: isExpanded ? color : 'var(--text-secondary)', flexShrink: 0 }}
+                            >
+                              <ChevronDown size={16} />
                             </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </motion.div>
-                    );
-                  })}
+                          </div>
+
+                          <AnimatePresence>
+                            {isExpanded && (
+                              <motion.div
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: 'auto', opacity: 1 }}
+                                exit={{ height: 0, opacity: 0 }}
+                                transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+                                style={{ overflow: 'hidden' }}
+                              >
+                                <div style={{ margin: '0 14px', paddingBottom: '14px', borderTop: `1px solid ${color}20` }}>
+                                  <div style={{
+                                    display: 'inline-flex', alignItems: 'center', gap: '5px',
+                                    background: `${color}12`, border: `1px solid ${color}25`,
+                                    borderRadius: '100px', padding: '4px 10px', marginTop: '12px', marginBottom: '8px',
+                                    fontSize: '11px', fontWeight: 700, color, textTransform: 'uppercase', letterSpacing: '0.05em'
+                                  }}>
+                                    {label} Details
+                                  </div>
+                                  {renderDetails(activity)}
+                                </div>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </motion.div>
+                      );
+                    })}
+                  </div>
                   
                   {activities.length > 3 && (
                     <motion.button

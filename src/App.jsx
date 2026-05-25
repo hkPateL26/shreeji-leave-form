@@ -85,12 +85,12 @@ const TopHeader = () => {
   const location = useLocation();
   const getTitle = () => {
     switch (location.pathname) {
-      case '/': return 'Dashboard Overview hari patel';
+      case '/': return 'Dashboard Overview';
       case '/checkin': return 'Daily Check In';
       case '/checkout': return 'Daily Check Out';
       case '/leave': return 'Leave Request';
       case '/status': return 'Status Dashboard';
-      case '/support': return 'Help & Support nik patel';
+      case '/support': return 'Help & Support';
       default: return 'Portal';
     }
   };

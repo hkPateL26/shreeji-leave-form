@@ -46,6 +46,7 @@ const Dashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [greeting, setGreeting] = useState('Welcome back');
   const [currentDate, setCurrentDate] = useState('');
+  const [sessionTime, setSessionTime] = useState('');
 
   useEffect(() => {
     // Set greeting based on time
@@ -70,6 +71,61 @@ const Dashboard = () => {
     }, 1000);
     return () => clearTimeout(fetchTimer);
   }, []);
+
+  useEffect(() => {
+    if (isLoading || activities.length === 0) {
+      setSessionTime('');
+      return;
+    }
+
+    if (!isCheckedIn) {
+      // Find the last completed session duration if checked out
+      const latestCheckOut = activities.find(a => a.type === 'checkout');
+      if (latestCheckOut) {
+        const matchingCheckIn = activities.find(
+          a => a.type === 'checkin' && new Date(a.timestamp) < new Date(latestCheckOut.timestamp)
+        );
+        if (matchingCheckIn) {
+          const durationMs = new Date(latestCheckOut.timestamp).getTime() - new Date(matchingCheckIn.timestamp).getTime();
+          if (durationMs > 0) {
+            const totalSecs = Math.floor(durationMs / 1000);
+            const hrs = Math.floor(totalSecs / 3600);
+            const mins = Math.floor((totalSecs % 3600) / 60);
+            setSessionTime(`Last Session: ${hrs}h ${mins}m`);
+            return;
+          }
+        }
+      }
+      setSessionTime('Session: Offline');
+      return;
+    }
+
+    const latestCheckIn = activities.find(a => a.type === 'checkin');
+    if (!latestCheckIn) {
+      setSessionTime('Active: 00:00:00');
+      return;
+    }
+
+    const startTime = new Date(latestCheckIn.timestamp).getTime();
+
+    const updateTimer = () => {
+      const diffMs = new Date().getTime() - startTime;
+      if (diffMs < 0) {
+        setSessionTime('Active: 00:00:00');
+        return;
+      }
+      const totalSecs = Math.floor(diffMs / 1000);
+      const hrs = Math.floor(totalSecs / 3600);
+      const mins = Math.floor((totalSecs % 3600) / 60);
+      const secs = totalSecs % 60;
+      const formatted = `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+      setSessionTime(`Active: ${formatted}`);
+    };
+
+    updateTimer();
+    const interval = setInterval(updateTimer, 1000);
+    return () => clearInterval(interval);
+  }, [isCheckedIn, activities, isLoading]);
 
   const fmtDate = (d) => new Date(d).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
   const fmtTime = (d) => new Date(d).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
@@ -140,6 +196,11 @@ const Dashboard = () => {
                   <span className="metric-value" style={{ color: isCheckedIn ? '#f43f5e' : '#10b981' }}>
                     {isCheckedIn ? 'Checked In' : 'Checked Out'}
                   </span>
+                  {sessionTime && (
+                    <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-secondary)', marginTop: '2px' }}>
+                      {sessionTime}
+                    </span>
+                  )}
                 </div>
               </motion.div>
               
@@ -252,6 +313,25 @@ const Dashboard = () => {
                     <div style={{ fontSize: '13px', marginTop: '2px', fontWeight: 600, color: isCheckedIn ? '#fb7185' : '#34d399' }}>
                       {isCheckedIn ? 'Tap to Check Out →' : 'Tap to Check In →'}
                     </div>
+                    {sessionTime && (
+                      <div style={{ 
+                        fontSize: '11px', 
+                        marginTop: '6px', 
+                        fontWeight: 700, 
+                        color: isCheckedIn ? '#fb7185' : 'var(--text-secondary)', 
+                        textTransform: 'uppercase', 
+                        letterSpacing: '0.04em', 
+                        background: isCheckedIn ? 'rgba(244,63,94,0.1)' : 'rgba(255,255,255,0.06)', 
+                        padding: '3px 8px', 
+                        borderRadius: '6px', 
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                        border: isCheckedIn ? '1px solid rgba(244,63,94,0.15)' : '1px solid var(--border-subtle)'
+                      }}>
+                        ⏱️ {sessionTime}
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div style={{

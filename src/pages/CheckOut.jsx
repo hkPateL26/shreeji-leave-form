@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PageTransition from '../components/PageTransition';
-import { addActivity, setCheckInStatus } from '../utils/activityService';
+import { addActivity, setCheckInStatus, getActivities } from '../utils/activityService';
 import { Loader2, AlertCircle, Clock, LogOut } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Skeleton from '../components/Skeleton';
@@ -25,6 +25,7 @@ const itemVariants = {
 const CheckOut = () => {
   const navigate = useNavigate();
   const [currentTime, setCurrentTime] = useState('');
+  const [workedTime, setWorkedTime] = useState('');
   
   const [formData, setFormData] = useState({
     name: '',
@@ -41,6 +42,29 @@ const CheckOut = () => {
     const now = new Date();
     const timeString = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
     setCurrentTime(timeString);
+
+    // Calculate worked time from last check-in
+    try {
+      const activities = getActivities();
+      const latestCheckIn = activities.find(a => a.type === 'checkin');
+      if (latestCheckIn) {
+        const durationMs = new Date().getTime() - new Date(latestCheckIn.timestamp).getTime();
+        if (durationMs > 0) {
+          const totalSecs = Math.floor(durationMs / 1000);
+          const hrs = Math.floor(totalSecs / 3600);
+          const mins = Math.floor((totalSecs % 3600) / 60);
+          
+          if (hrs > 0) {
+            setWorkedTime(`${hrs}h ${mins}m`);
+          } else {
+            setWorkedTime(`${mins}m`);
+          }
+        }
+      }
+    } catch (e) {
+      console.error('Error calculating duration on checkout mount:', e);
+    }
+
     return () => clearTimeout(timer);
   }, []);
 
@@ -80,6 +104,9 @@ const CheckOut = () => {
       submitData.append('Name', formData.name);
       submitData.append('Today Progress', formData.todayProgress);
       submitData.append('Tomorrow Plan', formData.tomorrowPlan);
+      if (workedTime) {
+        submitData.append('Worked Hours', workedTime);
+      }
 
       // Attempt webhook fetch but handle errors gracefully
       try {
@@ -94,7 +121,10 @@ const CheckOut = () => {
       addActivity({
         type: 'checkout',
         name: formData.name,
-        details: formData
+        details: {
+          ...formData,
+          workedTime
+        }
       });
       setCheckInStatus(false);
       
@@ -112,9 +142,16 @@ const CheckOut = () => {
       <div className="glass-container form-container" style={{ paddingBottom: '140px' }}>
         <motion.div className="header-section" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
           <h2 className="form-title">Daily Check Out</h2>
-          <div className="badge danger">
-            <Clock size={16} />
-            <span>{currentTime}</span>
+          <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', flexWrap: 'wrap', marginTop: '8px' }}>
+            <div className="badge danger">
+              <Clock size={16} />
+              <span>{currentTime}</span>
+            </div>
+            {workedTime && (
+              <div className="badge" style={{ background: 'rgba(16, 185, 129, 0.15)', color: '#10b981', borderColor: 'rgba(16, 185, 129, 0.25)' }}>
+                ⏱️ Session: {workedTime}
+              </div>
+            )}
           </div>
         </motion.div>
 

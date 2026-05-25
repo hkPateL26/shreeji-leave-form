@@ -5,7 +5,7 @@ import { getActivities, getCheckInStatus } from '../utils/activityService';
 import {
   Clock, Calendar as CalendarIcon, LogIn, LogOut, CalendarRange,
   ChevronRight, ChevronDown, User, Mail, Code2, Globe,
-  FileText, ClipboardList, CalendarDays, X
+  FileText, ClipboardList, CalendarDays, X, CheckCircle2, Hourglass
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Skeleton from '../components/Skeleton';
@@ -44,8 +44,24 @@ const Dashboard = () => {
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [expandedId, setExpandedId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [greeting, setGreeting] = useState('Welcome back');
+  const [currentDate, setCurrentDate] = useState('');
 
   useEffect(() => {
+    // Set greeting based on time
+    const hr = new Date().getHours();
+    if (hr < 12) setGreeting('Good Morning');
+    else if (hr < 17) setGreeting('Good Afternoon');
+    else setGreeting('Good Evening');
+
+    // Set formatted date
+    setCurrentDate(new Date().toLocaleDateString('en-US', { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    }));
+
     // Simulate data fetch
     const fetchTimer = setTimeout(() => {
       setActivities(getActivities());
@@ -94,20 +110,91 @@ const Dashboard = () => {
     <PageTransition>
       <div className="glass-container dashboard-container" style={{ paddingBottom: '140px' }}>
 
+        {/* ── Welcome Banner & Quick Stats (Desktop Only) ── */}
+        {!isLoading && (
+          <>
+            <div className="desktop-welcome-banner">
+              <div className="welcome-banner-overlay" />
+              <div className="welcome-banner-content">
+                <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}>
+                  <span className="welcome-badge">Workspace Active</span>
+                  <h1 className="welcome-title">{greeting}, {activities[0]?.name || "Intern"}! 👋</h1>
+                  <p className="welcome-subtitle">Have a productive and wonderful day ahead. All your logs are synced live with the Shreeji I-tech servers.</p>
+                </motion.div>
+                <motion.div className="welcome-banner-right" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6, delay: 0.2 }}>
+                  <div className="banner-date-card">
+                    <CalendarIcon size={20} className="banner-date-icon" />
+                    <span className="banner-date-text">{currentDate}</span>
+                  </div>
+                </motion.div>
+              </div>
+            </div>
+
+            <div className="desktop-metrics-grid">
+              <motion.div className="metric-card" whileHover={{ y: -4 }}>
+                <div className="metric-icon-wrapper checkin-glow">
+                  <LogIn size={20} color="#10b981" />
+                </div>
+                <div className="metric-details">
+                  <span className="metric-label">Status</span>
+                  <span className="metric-value" style={{ color: isCheckedIn ? '#f43f5e' : '#10b981' }}>
+                    {isCheckedIn ? 'Checked In' : 'Checked Out'}
+                  </span>
+                </div>
+              </motion.div>
+              
+              <motion.div className="metric-card" whileHover={{ y: -4 }}>
+                <div className="metric-icon-wrapper activity-glow">
+                  <ClipboardList size={20} color="#0ea5e9" />
+                </div>
+                <div className="metric-details">
+                  <span className="metric-label">Submissions</span>
+                  <span className="metric-value">{activities.length} Logs</span>
+                </div>
+              </motion.div>
+
+              <motion.div className="metric-card" whileHover={{ y: -4 }}>
+                <div className="metric-icon-wrapper role-glow">
+                  <User size={20} color="#8b5cf6" />
+                </div>
+                <div className="metric-details">
+                  <span className="metric-label">Internship Role</span>
+                  <span className="metric-value">Developer</span>
+                </div>
+              </motion.div>
+            </div>
+          </>
+        )}
+
         {/* ═══ Desktop 2-col grid ═══════════════════════════════ */}
         {isLoading ? (
-          <div className="dashboard-desktop-grid">
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <Skeleton height="20px" width="100px" borderRadius="4px" />
-              <Skeleton height="90px" borderRadius="22px" />
+          <>
+            {/* Desktop Welcome Banner & Metrics Skeleton (Desktop only) */}
+            <div className="desktop-only-banner" style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginBottom: '32px', width: '100%' }}>
+              <Skeleton height="120px" borderRadius="24px" />
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
+                <Skeleton height="88px" borderRadius="20px" />
+                <Skeleton height="88px" borderRadius="20px" />
+                <Skeleton height="88px" borderRadius="20px" />
+              </div>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <Skeleton height="20px" width="120px" borderRadius="4px" />
-              <Skeleton height="70px" borderRadius="16px" />
-              <Skeleton height="70px" borderRadius="16px" />
-              <Skeleton height="70px" borderRadius="16px" />
+            <div className="dashboard-desktop-grid">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <Skeleton height="20px" width="100px" borderRadius="4px" />
+                <Skeleton height="90px" borderRadius="22px" />
+                <div className="desktop-only-banner" style={{ marginTop: '24px' }}>
+                  <Skeleton height="140px" borderRadius="22px" />
+                  <Skeleton height="140px" borderRadius="22px" style={{ marginTop: '24px' }} />
+                </div>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <Skeleton height="20px" width="120px" borderRadius="4px" />
+                <Skeleton height="70px" borderRadius="16px" />
+                <Skeleton height="70px" borderRadius="16px" />
+                <Skeleton height="70px" borderRadius="16px" />
+              </div>
             </div>
-          </div>
+          </>
         ) : (
         <div className="dashboard-desktop-grid">
 
@@ -178,6 +265,51 @@ const Dashboard = () => {
                 </div>
               </motion.div>
             </motion.div>
+
+            {/* ── Desktop Weekly Tracker & Profile (Desktop Only) ── */}
+            <div className="desktop-only-banner">
+              <motion.div className="desktop-attendance-card" variants={itemVariants} initial="hidden" animate="show">
+                <p className="card-section-title">Weekly Attendance Tracker</p>
+                <div className="weekly-tracker-grid">
+                  {['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].map((day, idx) => {
+                    const todayIdx = new Date().getDay() - 1; // 0 for Mon, 4 for Fri
+                    const isPastOrToday = idx <= todayIdx;
+                    const isChecked = isPastOrToday && (idx < todayIdx || isCheckedIn);
+                    
+                    return (
+                      <div key={day} className="weekly-tracker-day">
+                        <span className="tracker-day-name">{day}</span>
+                        <div className={`tracker-day-dot ${isChecked ? 'active' : isPastOrToday ? 'pending' : ''}`}>
+                          {isChecked ? <CheckCircle2 size={12} color="#fff" /> : isPastOrToday ? <Hourglass size={12} color="var(--text-secondary)" /> : null}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </motion.div>
+
+              <motion.div className="desktop-profile-card" variants={itemVariants} initial="hidden" animate="show">
+                <div className="profile-card-header">
+                  <div className="profile-avatar-wrapper">
+                    <User size={20} />
+                  </div>
+                  <div className="profile-header-info">
+                    <span className="profile-name">{activities[0]?.name || "Intern"}</span>
+                    <span className="profile-role">Shreeji Intern</span>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '12px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '6px' }}>
+                    <span style={{ color: 'var(--text-secondary)' }}>Technology:</span>
+                    <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{activities.find(a => a.type === 'checkin')?.details?.technology || 'React + Node'}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', paddingBottom: '2px' }}>
+                    <span style={{ color: 'var(--text-secondary)' }}>Status:</span>
+                    <span style={{ fontWeight: 700, color: isCheckedIn ? '#10b981' : '#f43f5e' }}>{isCheckedIn ? 'ACTIVE' : 'INACTIVE'}</span>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
           </div>
 
           {/* ── Col 2: Recent Activity ─────────────────────────── */}

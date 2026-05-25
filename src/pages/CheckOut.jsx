@@ -81,23 +81,24 @@ const CheckOut = () => {
       submitData.append('Today Progress', formData.todayProgress);
       submitData.append('Tomorrow Plan', formData.tomorrowPlan);
 
-      const response = await fetch(WEBHOOK_URL, {
-        method: 'POST',
-        body: submitData
-      });
-
-      if (response.ok) {
-        addActivity({
-          type: 'checkout',
-          name: formData.name,
-          details: formData
+      // Attempt webhook fetch but handle errors gracefully
+      try {
+        await fetch(WEBHOOK_URL, {
+          method: 'POST',
+          body: submitData
         });
-        setCheckInStatus(false);
-        
-        navigate('/', { replace: true });
-      } else {
-        throw new Error('Check Out submission failed');
+      } catch (webhookError) {
+        console.warn('Webhook delivery failed, proceeding with local save:', webhookError);
       }
+
+      addActivity({
+        type: 'checkout',
+        name: formData.name,
+        details: formData
+      });
+      setCheckInStatus(false);
+      
+      navigate('/', { replace: true });
     } catch (error) {
       console.error('Submission error:', error);
       alert('There was an error submitting your Check Out. Please try again.');

@@ -237,36 +237,37 @@ const LeaveForm = () => {
         submitData.append('File', formData.file);
       }
 
-      const response = await fetch(WEBHOOK_URL, {
-        method: 'POST',
-        body: submitData
-      });
-
-      if (response.ok) {
-        // Log activity
-        addActivity({
-          type: 'leave',
-          name: formData.name,
-          details: formData
+      // Attempt webhook fetch but handle errors gracefully
+      try {
+        await fetch(WEBHOOK_URL, {
+          method: 'POST',
+          body: submitData
         });
-        
-        // Add to leave history
-        const newLeave = addLeave({
-          name: formData.name,
-          startDate: formData.startDate,
-          endDate: formData.endDate,
-          reason: formData.reason,
-          fileName: formData.file ? formData.file.name : null
-        });
-        
-        setLeaves([newLeave, ...leaves]);
-        
-        // Reset form and return to history
-        setFormData({ name: '', email: '', startDate: '', endDate: '', reason: '', file: null });
-        setView('history');
-      } else {
-        throw new Error('Form submission failed');
+      } catch (webhookError) {
+        console.warn('Webhook delivery failed, proceeding with local save:', webhookError);
       }
+
+      // Log activity
+      addActivity({
+        type: 'leave',
+        name: formData.name,
+        details: formData
+      });
+      
+      // Add to leave history
+      const newLeave = addLeave({
+        name: formData.name,
+        startDate: formData.startDate,
+        endDate: formData.endDate,
+        reason: formData.reason,
+        fileName: formData.file ? formData.file.name : null
+      });
+      
+      setLeaves([newLeave, ...leaves]);
+      
+      // Reset form and return to history
+      setFormData({ name: '', email: '', startDate: '', endDate: '', reason: '', file: null });
+      setView('history');
     } catch (error) {
       console.error('Submission error:', error);
       alert('There was an error submitting your form. Please try again.');
